@@ -2,7 +2,7 @@ from django.db import models
 from datetime import datetime
 
 # Create your models here.
-
+'''
 class InsertFile(models.Model):
     name = models.CharField(max_length=100)
     age = models.IntegerField()
@@ -11,3 +11,4 @@ class InsertFile(models.Model):
 
     def __str__(self):
         return self.name
+'''
