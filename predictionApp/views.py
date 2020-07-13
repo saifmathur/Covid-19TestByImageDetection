@@ -1,7 +1,12 @@
 from django.shortcuts import render
 from pymongo import MongoClient
 from gridfs import GridFS
-from django.core.files.storage import FileSystemStorage
+
+from tensorflow import keras
+#model = keras.models.load_model('\covidPrediction\covid19_model.h5')
+
+
+#from django.core.files.storage import FileSystemStorage
 
 CLIENT = MongoClient('localhost',27017)
 DATABASE = CLIENT['CovidProject']
@@ -14,16 +19,23 @@ def index(request):
 
 def predict(request):
     if request.method == 'POST':
-        name = request.POST.get('name')
-        age = request.POST.get('age')
+        name = request.POST['name']
+        age = request.POST['age']
         image = request.FILES['img']
-        imageFile = FileSystemStorage()
-        imageFile.save(image.name, image)
+        open(image)
+        #imageFile = FileSystemStorage()
+        #imageFile.save(image.name, image)
         fs = GridFS(DATABASE)
-        fs.put(image)
-        
-        print(image)
-        print(request)
+        image_id = fs.put(image) #for finding and keeping track
+        dataDict = {
+            "name":name,
+            "age":age,
+            "filename":image.name,
+            "file_id": image_id
+        }
+        dataInsertion = COLLECTION.insert_one(dataDict)
+        #print(image)
+        #print(request)
     return render(request,'covidIndex.html')
 
 
